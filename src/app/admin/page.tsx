@@ -12,7 +12,7 @@ export default function Home() {
   };
 
   const fetchTopTracks = async (accessToken: string) => {
-    const response = await fetch(`/api/spotify/top-tracks?access_token=${accessToken}`);
+    const response = await fetch(`/api/spotify/get-tracks?access_token=${accessToken}`);
     const data = await response.json();
     setTopTracks(data);
   };
@@ -29,6 +29,8 @@ export default function Home() {
   useEffect(() => {
     handleCallback();
   }, []);
+
+  console.log('Redirect URI:', process.env.SPOTIFY_REDIRECT_URI);
 
 
 
