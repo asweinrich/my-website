@@ -11,7 +11,7 @@ export default function Home() {
   const handleSearch = async (e) => {
     e.preventDefault();
 
-    const response = await fetch(`/api/spotify-search?query=${encodeURIComponent(searchTerm)}`);
+    const response = await fetch(`/api/get-tracks`);
     const data = await response.json();
     
     setResults(data);
@@ -30,18 +30,12 @@ export default function Home() {
           <span className="text-yellow-300">ADMIN</span>
        
           <form onSubmit={handleSearch}>
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search Spotify..."
-            />
-            <button type="submit">Search</button>
+            <button type="submit">Get Top Tracks</button>
           </form>
 
           {results && (
             <div>
-              <h2>Search Results:</h2>
+              <h2>Results:</h2>
               <pre>{JSON.stringify(results, null, 2)}</pre>
             </div>
           )}
