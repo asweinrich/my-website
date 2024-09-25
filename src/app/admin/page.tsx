@@ -1,21 +1,34 @@
 "use client"
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Header from "../components/Header.jsx";
 
 export default function Home() {
 
-  const [searchTerm, setSearchTerm] = useState('');
-  const [results, setResults] = useState(null);
+  const [topTracks, setTopTracks] = useState(null);
 
-  const handleSearch = async (e) => {
-    e.preventDefault();
-
-    const response = await fetch(`/api/get-tracks`);
-    const data = await response.json();
-    
-    setResults(data);
+  const handleLogin = () => {
+    window.location.href = '/api/spotify/login';
   };
+
+  const fetchTopTracks = async (accessToken: string) => {
+    const response = await fetch(`/api/spotify/top-tracks?access_token=${accessToken}`);
+    const data = await response.json();
+    setTopTracks(data);
+  };
+
+  const handleCallback = async () => {
+    const params = new URLSearchParams(window.location.search);
+    const accessToken = params.get('access_token');
+    if (accessToken) {
+      fetchTopTracks(accessToken);
+    }
+  };
+
+  // Call this when the page loads
+  useEffect(() => {
+    handleCallback();
+  }, []);
 
 
 
@@ -29,14 +42,18 @@ export default function Home() {
         <div className="flex flex-col">
           <span className="text-yellow-300">ADMIN</span>
        
-          <form onSubmit={handleSearch}>
-            <button type="submit">Get Top Tracks</button>
-          </form>
+          <button onClick={handleLogin}>Log in with Spotify</button>
 
-          {results && (
+          {topTracks && (
             <div>
-              <h2>Results:</h2>
-              <pre>{JSON.stringify(results, null, 2)}</pre>
+              <h2>Top Tracks:</h2>
+              <ul>
+                {topTracks.map((track: any) => (
+                  <li key={track.id}>
+                    {track.name} by {track.artists.map((artist: any) => artist.name).join(', ')}
+                  </li>
+                ))}
+              </ul>
             </div>
           )}
         </div>

@@ -1,27 +1,29 @@
 import { NextResponse } from 'next/server';
 import axios from 'axios';
 
+// Handler to get the user's top tracks
 export async function GET(req: Request) {
-  
+  const { searchParams } = new URL(req.url);
+  const access_token = searchParams.get('access_token');
+
+  if (!access_token) {
+    return NextResponse.json({ error: 'Access token is missing' }, { status: 400 });
+  }
+
   try {
-    // Fetch the access token from the token route
-    const tokenResponse = await fetch(`/api/spotify-token/route.ts`, {
-      method: 'POST',
+    const response = await axios.get('https://api.spotify.com/v1/me/top/tracks', {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+      params: {
+        time_range: 'long_term', // long-term listening history
+        limit: 15, // Limit to 15 tracks
+      },
     });
-    const { access_token } = await tokenResponse.json();
 
-    // Perform the search
-    const searchResponse = await axios.get(
-      `https://api.spotify.com/v1/me/top/tracks?time_range=long_term&limit=10`,
-      {
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-        },
-      }
-    );
-
-    return NextResponse.json(searchResponse.data);
+    const topTracks = response.data.items;
+    return NextResponse.json(topTracks);
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to search Spotify' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to fetch top tracks' }, { status: 500 });
   }
 }
