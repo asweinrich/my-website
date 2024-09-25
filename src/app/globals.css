@@ -14,6 +14,12 @@
   }
 }
 
+@font-face {
+  font-family: 'Werdna';
+  src: url('/fonts/Werdna-Regular.ttf') format('truetype'); /* Update the font path and format accordingly */
+}
+
+
 body {
   color: var(--foreground);
   background: var(--background);
