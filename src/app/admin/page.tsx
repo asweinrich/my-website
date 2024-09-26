@@ -3,6 +3,12 @@
 import { useState, useEffect } from 'react';
 import Header from "../components/Header.jsx";
 
+interface Track {
+  id: string;
+  name: string;
+  artists: { name: string }[];
+}
+
 export default function Home() {
 
   const [password, setPassword] = useState('');
@@ -33,7 +39,7 @@ export default function Home() {
     }
   };
 
-  const [topTracks, setTopTracks] = useState(null);
+  const [topTracks, setTopTracks] = useState<Track[]>([]);
 
   const handleLogin = () => {
     window.location.href = '/api/spotify/login';
@@ -92,7 +98,7 @@ export default function Home() {
                 <div>
                   <h2>Top Tracks:</h2>
                   <ul>
-                    {topTracks.map((track: any) => (
+                    {topTracks.map((track: Track) => (
                       <li key={track.id}>
                         {track.name} by {track.artists.map((artist: any) => artist.name).join(', ')}
                       </li>
