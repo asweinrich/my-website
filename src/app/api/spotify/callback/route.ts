@@ -4,7 +4,7 @@ import querystring from 'querystring';
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
-  const code = searchParams.get('code');
+  const code = searchParams.get('code'); // Get the authorization code from the query params
 
   if (!code) {
     return NextResponse.json({ error: 'No code provided' }, { status: 400 });
@@ -12,8 +12,8 @@ export async function GET(req: Request) {
 
   const body = querystring.stringify({
     grant_type: 'authorization_code',
-    code: code,
-    redirect_uri: process.env.NEXT_PUBLIC_SPOTIFY_REDIRECT_URI,
+    code,
+    redirect_uri: process.env.NEXT_PUBLIC_SPOTIFY_REDIRECT_URI, // Ensure this is correctly set in .env.local
     client_id: process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID,
     client_secret: process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_SECRET,
   });
@@ -27,10 +27,9 @@ export async function GET(req: Request) {
 
     const { access_token, refresh_token } = response.data;
 
-    // Store the tokens (in a session, database, etc.)
-    // For simplicity, return the access token for now
     return NextResponse.json({ access_token, refresh_token });
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to fetch access token' }, { status: 500 });
+    console.error('Failed to exchange authorization code for tokens', error);
+    return NextResponse.json({ error: 'Failed to exchange authorization code' }, { status: 500 });
   }
 }

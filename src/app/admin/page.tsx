@@ -16,7 +16,7 @@ export default function Home() {
   const [error, setError] = useState('');
 
   const correctPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD; 
-  console.log(correctPassword)
+
 
   useEffect(() => {
     // Check if the password is already stored in local storage (so user doesn't have to re-enter it)
@@ -43,6 +43,9 @@ export default function Home() {
 
   const handleLogin = () => {
     window.location.href = '/api/spotify/login';
+
+    
+
   };
 
   const fetchTopTracks = async (accessToken: string) => {
@@ -63,9 +66,6 @@ export default function Home() {
   useEffect(() => {
     handleCallback();
   }, []);
-
-  console.log('Redirect URI:', process.env.NEXT_PUBLIC_SPOTIFY_REDIRECT_URI);
-
 
 
   return (
@@ -89,11 +89,13 @@ export default function Home() {
         </div>
       ) : (
         <div>
-          <main className="flex flex-row h-screen relative justify-start px-8">
-            <div className="flex flex-col">
-           
-              <button onClick={handleLogin}>Log in with Spotify</button>
-
+          <main className="flex flex-row w-full h-screen relative justify-center px-8">
+            <div className="flex flex-col w-full md:w-2/3">
+              <div className="flex flex-row justify-between w-full">
+                <h2 className="text-4xl mb-4">Music</h2>
+             
+                <button className="text-3xl bg-emerald-800 hover:bg-emerald-900 px-6 py-2 rounded-full" onClick={handleLogin}>Log in with Spotify to update tracks</button>
+              </div>
               {topTracks && (
                 <div>
                   <h2>Top Tracks:</h2>
